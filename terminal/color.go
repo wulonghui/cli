@@ -12,14 +12,14 @@ import (
 type Color uint
 
 const (
-	red    Color = 31
-	green        = 32
-	yellow       = 33
-	//	blue          = 34
-	magenta = 35
-	cyan    = 36
-	grey    = 37
-	white   = 38
+	red     Color = 31
+	green         = 32
+	yellow        = 33
+	blue          = 34
+	magenta       = 35
+	cyan          = 36
+	grey          = 37
+	white         = 38
 )
 
 var (
@@ -110,6 +110,10 @@ func PromptColor(message string) string {
 
 func TableContentHeaderColor(message string) string {
 	return ColorizeBold(message, cyan)
+}
+
+func DebugColor(message string) string {
+	return ColorizeBold(message, blue)
 }
 
 func WarningColor(message string) string {

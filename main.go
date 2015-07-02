@@ -102,6 +102,15 @@ func newApp() (app *cli.App) {
 		ui.Failed(fmt.Sprintf("Unknown command '%s'", command))
 	}
 
+	//GLOBAL OPTIONS
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:   "debug, d",
+			Usage:  "Enable debug mode",
+			EnvVar: "DEBUG",
+		},
+	}
+
 	app.Commands = []cli.Command{helpCommand}
 
 	for _, cmd := range command.Commands {
@@ -114,6 +123,8 @@ func newApp() (app *cli.App) {
 			Flags:           metadata.Flags,
 			SkipFlagParsing: metadata.SkipFlagParsing,
 			Action: func(ctx *cli.Context) {
+				terminal.Debug = ctx.GlobalBool("debug")
+
 				err := runCommand(cmd, ctx)
 				if err != nil {
 					panic(err)

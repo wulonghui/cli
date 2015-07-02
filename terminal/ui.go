@@ -13,12 +13,15 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+var Debug bool
+
 type ColoringFunction func(value string, row int, col int) string
 
 type UI interface {
 	PrintPaginator(rows []string, err error)
 	Say(message string, args ...interface{})
 	PrintCapturingNoOutput(message string, args ...interface{})
+	Debug(message string, args ...interface{})
 	Warn(message string, args ...interface{})
 	Ask(prompt string, args ...interface{}) (answer string)
 	AskForPassword(prompt string, args ...interface{}) (answer string)
@@ -73,8 +76,16 @@ func (c *terminalUI) Say(message string, args ...interface{}) {
 	}
 }
 
+func (c *terminalUI) Debug(message string, args ...interface{}) {
+	if Debug {
+		message = fmt.Sprintf("[Debug] "+message, args...)
+		c.Say(DebugColor(message))
+	}
+	return
+}
+
 func (c *terminalUI) Warn(message string, args ...interface{}) {
-	message = fmt.Sprintf(message, args...)
+	message = fmt.Sprintf("[WARN] "+message, args...)
 	c.Say(WarningColor(message))
 	return
 }

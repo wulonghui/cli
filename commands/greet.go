@@ -39,6 +39,8 @@ func (cmd Greet) MetaData() command.CommandMetadata {
 }
 
 func (cmd Greet) Execute(ctx *cli.Context) error {
+	cmd.Debug("Greet %v", ctx.Args())
+
 	if len(ctx.Args()) != 1 {
 		cmd.FailWithUsage(ctx)
 	}
