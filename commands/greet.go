@@ -1,19 +1,25 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/wulonghui/cli/command"
 	. "github.com/wulonghui/cli/i18n"
+	"github.com/wulonghui/cli/terminal"
 
 	"github.com/codegangsta/cli"
 )
 
 func init() {
+
 	command.Register(Greet{})
 }
 
 type Greet struct {
+	terminal.UI
+}
+
+func (cmd Greet) Init(data command.CommandInitData) (command.Command, error) {
+	cmd.UI = data.UI
+	return cmd, nil
 }
 
 func (cmd Greet) MetaData() command.CommandMetadata {
@@ -33,17 +39,17 @@ func (cmd Greet) MetaData() command.CommandMetadata {
 }
 
 func (cmd Greet) Execute(ctx *cli.Context) error {
-	name := "someone"
-    
-	if len(ctx.Args()) > 0 {
-		name = ctx.Args()[0]
+	if len(ctx.Args()) != 1 {
+		cmd.FailWithUsage(ctx)
 	}
-    
+
+	name := ctx.Args()[0]
+
 	if ctx.String("lang") == "Spanish" {
-		fmt.Println("Hola", name)
+		cmd.Say("Hola %s", name)
 	} else {
-		fmt.Println("Hello", name)
+		cmd.Say("Hello %s", name)
 	}
-    
+
 	return nil
 }
