@@ -36,16 +36,73 @@ func usage() string {
 	return T("A command line tool")
 }
 
+func appHelpTemplate() string {
+	return `NAME:
+   {{.Name}} - {{.Usage}}
+   
+USAGE:
+   {{.Name}} {{if .Flags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} [arguments...]
+   {{if .Version}}
+VERSION:
+   {{.Version}}
+   {{end}}{{if len .Authors}}
+AUTHOR(S): 
+   {{range .Authors}}{{ . }}{{end}}
+   {{end}}{{if .Commands}}
+COMMANDS:
+   {{range .Commands}}{{join .Names ", "}}{{ "\t" }}{{.Description}}
+   {{end}}{{end}}{{if .Flags}}
+GLOBAL OPTIONS:
+   {{range .Flags}}{{.}}
+   {{end}}{{end}}{{if .Copyright }}
+COPYRIGHT:
+   {{.Copyright}}
+   {{end}}
+`
+}
+
+func commandHelpTemplate() string {
+	return fmt.Sprintf(`NAME:
+   {{.Name}} - {{.Description}}
+   
+USAGE:
+   %s {{.Usage}}
+   {{if .Flags}}
+OPTIONS:
+   {{range .Flags}}{{.}}
+   {{end}}{{ end }}
+`, NAME)
+}
+
 func newApp() (app *cli.App) {
+	cli.AppHelpTemplate = appHelpTemplate()
+	cli.CommandHelpTemplate = commandHelpTemplate()
+
+	helpCommand := cli.Command{
+		Name:        "help",
+		Aliases:     []string{"h"},
+		Usage:       T("help [COMMAND]"),
+		Description: "Shows a list of commands or help for one command",
+		Action: func(ctx *cli.Context) {
+			args := ctx.Args()
+			if args.Present() {
+				cli.ShowCommandHelp(ctx, args.First())
+			} else {
+				cli.ShowAppHelp(ctx)
+			}
+		},
+	}
+
 	app = cli.NewApp()
 	app.Usage = usage()
 	app.Name = NAME
 	app.Version = VERSION
+	app.Action = helpCommand.Action
 	app.CommandNotFound = func(c *cli.Context, command string) {
 		ui.Failed(fmt.Sprintf("Unknown command '%s'", command))
 	}
 
-	app.Commands = make([]cli.Command, 0)
+	app.Commands = []cli.Command{helpCommand}
 
 	for _, cmd := range command.Commands {
 		metadata := cmd.MetaData()

@@ -26,7 +26,7 @@ func (cmd Greet) MetaData() command.CommandMetadata {
 	return command.CommandMetadata{
 		Name:        "greet",
 		ShortName:   "g",
-		Usage:       T("Say hello"),
+		Usage:       T("greet NAME"),
 		Description: T("Say hello"),
 		Flags: []cli.Flag{
 			cli.StringFlag{
