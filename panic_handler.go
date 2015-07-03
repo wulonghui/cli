@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"fmt"
@@ -24,12 +24,8 @@ func displayCrashDialog(err interface{}, commandArgs string, stackTrace string) 
 
 func crashDialog(errorMessage string, commandArgs string, stackTrace string) string {
 	formattedString := `
-	Something completely unexpected happened. This is a bug in %s.
+	Something completely unexpected happened. This is a bug.
 	Tell us that you ran this command:
-
-		%s
-
-	using this version of the CLI:
 
 		%s
 
@@ -42,11 +38,11 @@ func crashDialog(errorMessage string, commandArgs string, stackTrace string) str
 	%s
 `
 
-	return fmt.Sprintf(formattedString, NAME, commandArgs, VERSION, errorMessage, stackTrace)
+	return fmt.Sprintf(formattedString, commandArgs, errorMessage, stackTrace)
 }
 
 func printCrashDialog(errorMessage string, commandArgs string, stackTrace string) {
-	ui.Say(crashDialog(errorMessage, commandArgs, stackTrace))
+	terminal.Say(crashDialog(errorMessage, commandArgs, stackTrace))
 }
 
 func generateBacktrace() string {

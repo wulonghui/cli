@@ -13,8 +13,6 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var Debug bool
-
 type ColoringFunction func(value string, row int, col int) string
 
 type UI interface {
@@ -77,10 +75,8 @@ func (c *terminalUI) Say(message string, args ...interface{}) {
 }
 
 func (c *terminalUI) Debug(message string, args ...interface{}) {
-	if Debug {
-		message = fmt.Sprintf("[Debug] "+message, args...)
-		c.Say(DebugColor(message))
-	}
+	message = fmt.Sprintf("[Debug] "+message, args...)
+	c.Say(DebugColor(message))
 	return
 }
 
