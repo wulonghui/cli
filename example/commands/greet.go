@@ -23,8 +23,8 @@ func (cmd Greet) MetaData() command.CommandMetadata {
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "lang, l",
-				Value: "English or Spanish, default is English",
-				Usage: "Language for the greeting",
+				Value: T("English or Spanish, default is English"),
+				Usage: T("Language for the greeting"),
 			},
 		},
 	}
@@ -36,7 +36,7 @@ func (cmd Greet) Execute(ctx *cli.Context) error {
 	var name string
 
 	if len(ctx.Args()) == 0 {
-		name = terminal.Ask("Input name")
+		name = terminal.Ask(T("Input name"))
 	} else if len(ctx.Args()) == 1 {
 		name = ctx.Args()[0]
 	} else {
